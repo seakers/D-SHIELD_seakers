@@ -20,8 +20,11 @@ Input modules:
 	
 Input:
 	Location
+		r = [x, y, z]
 	Orientation
+		q = [q0, q1, q2, q3]
 	Current Plan
+		
 
 Output:
 	Solar Irradience
@@ -29,3 +32,7 @@ Output:
 	Battery State vs time
 	Warnings if power consumption is close to being surpassed
 	Errors if power consumption is surpassed 
+	
+	Output format:
+	epoch = 20200105124504.05 UTC
+	t,Bat[W/m^2],P_gen[W],P_cons[W],P_tot[W]
