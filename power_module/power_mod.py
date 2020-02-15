@@ -52,7 +52,9 @@ class Power_mod:
         # initializes power module
         for i in range(len(orbit.r)):
             self.r_prev.append(orbit.r[i])
+            self.r.append(orbit.r[i])
             self.e_sun_prev.append(orbit.e_sun[i])
+            self.e_sun.append(orbit.e_sun[i])
 
         self.Re = orbit.Re
 
@@ -61,15 +63,19 @@ class Power_mod:
 
         self.bat_prev = batt_0
         self.batt_max = batt_max
-        self.eclipse = self.check_eclipse(orbit)
+        self.eclipse = self.check_eclipse()
         self.t_prev = t_0
 
     def update(self, orbit, acs, optimizer, sat, t):
         # updates power values and returns warnings if power consumption goes beyond power supply
         # -unpack inputs
         self.r = []
+        self.e_sun = []
+        self.q = []
+
         for i in range(len(orbit.r)):
             self.r.append(orbit.r[i])
+            self.e_sun.append(orbit.e_sun[i])
 
         for i in range(len(acs.q)):
             self.q.append(acs.q[i])
@@ -99,6 +105,7 @@ class Power_mod:
             x = 1
         else:
             # --else, calculate battery charge vs time
+            deta_t = self.t - self.t_prev
             x = 2
 
         # -save current values as previous values for next iteration
