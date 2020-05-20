@@ -1,0 +1,139 @@
+{
+    "@type": "Architecture",
+    "@id": "arch-0",
+    "spaceSegment": [
+        {
+            "@type": "Constellation",
+            "@id": "con-0",
+            "constellationType": "DELTA_HOMOGENEOUS",
+            "numberSatellites": 1,
+            "numberPlanes": 1,
+            "relativeSpacing": 0,
+            "satellites": [
+                {
+                    "@type": "Satellite",
+                    "@id": "sat-0",
+                    "name": "Landsat 8",
+                    "acronym": "Landsat 8",
+                    "mass": "nil",
+                    "dryMass": "2019.3652588321843",
+                    "volume": "nil",
+                    "power": "5450.356021895604",
+                    "commBand": [
+                        "X"
+                    ],
+                    "adcs": {
+                        "mass": "154.07874822488375",
+                        "type": "three-axis"
+                    },
+                    "payload": [
+                        {
+                            "name": "Ocean Radiometer for Carbon Assessment",
+                            "acronym": "ACE_ORCA",
+                            "mass": 236.0,
+                            "volume": 0.261,
+                            "power": 380.0,
+                            "orientation": {
+                                "convention": "SIDE_LOOK",
+                                "sideLookAngle": 0.0,
+                                "@type": "Orientation"
+                            },
+                            "fieldOfView": {
+                                "sensorGeometry": "RECTANGULAR",
+                                "alongTrackFieldOfView": 101.0,
+                                "crossTrackFieldOfView": 101.0,
+                                "@type": "FieldOfView"
+                            },
+                            "dataRate": 384.0,
+                            "bitsPerPixel": 12.0,
+                            "techReadinessLevel": 9.0,
+                            "mountType": "BODY",
+                            "@type": "Basic Sensor"
+                        },
+                        {
+                            "name": "Multiangle Spectro Polarimetric Imager ",
+                            "acronym": "ACE_POL",
+                            "mass": 236.0,
+                            "volume": 0.261,
+                            "power": 380.0,
+                            "orientation": {
+                                "convention": "SIDE_LOOK",
+                                "sideLookAngle": 0.0,
+                                "@type": "Orientation"
+                            },
+                            "fieldOfView": {
+                                "sensorGeometry": "RECTANGULAR",
+                                "alongTrackFieldOfView": 101.0,
+                                "crossTrackFieldOfView": 101.0,
+                                "@type": "FieldOfView"
+                            },
+                            "dataRate": 384.0,
+                            "bitsPerPixel": 12.0,
+                            "techReadinessLevel": 9.0,
+                            "mountType": "BODY",
+                            "@type": "Basic Sensor"
+                        },
+                        {
+                            "name": "High Spectral Resolution Lidar",
+                            "acronym": "ACE_LID",
+                            "mass": 236.0,
+                            "volume": 0.261,
+                            "power": 380.0,
+                            "orientation": {
+                                "convention": "SIDE_LOOK",
+                                "sideLookAngle": 0.0,
+                                "@type": "Orientation"
+                            },
+                            "fieldOfView": {
+                                "sensorGeometry": "RECTANGULAR",
+                                "alongTrackFieldOfView": 101.0,
+                                "crossTrackFieldOfView": 101.0,
+                                "@type": "FieldOfView"
+                            },
+                            "dataRate": 384.0,
+                            "bitsPerPixel": 12.0,
+                            "techReadinessLevel": 9.0,
+                            "mountType": "BODY",
+                            "@type": "Basic Sensor"
+                        }
+                    ],
+                    "orbit": {
+                        "@type": "Orbit",
+                        "orbitType": "KEPLERIAN",
+                        "semimajorAxis": 6978.1363,
+                        "inclination": 90.0,
+                        "eccentricity": 0.0,
+                        "periapsisArgument": 0.0,
+                        "rightAscensionAscendingNode": 0.0,
+                        "trueAnomaly": 0.0,
+                        "epoch": "2020-03-08T00:00:00-06:00",
+                        "time": "AM"
+                    },
+                    "techReadinessLevel": 9,
+                    "isGroundCommand": true,
+                    "isSpare": false,
+                    "propellantType": "MONO_PROP",
+                    "stabilizationType": "AXIS_3"
+                }
+            ]
+        }
+    ],
+    "groundSegment": [
+        {
+            "@type": "GroundNetwork",
+            "numberStations": 1,
+            "groundStations": [
+                {
+                    "@type": "GroundStation",
+                    "@id": "gs-0",
+                    "latitude": 40.5974791834978,
+                    "longitude": -104.83875274658203,
+                    "elevation": 1570.0,
+                    "commBand": [
+                        "X"
+                    ]
+                }
+            ]
+        }
+    ]
+}

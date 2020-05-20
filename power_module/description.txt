@@ -35,4 +35,5 @@ Output:
 	
 	Output format:
 	epoch = 20200105124504.05 UTC
-	t,Bat[W/m^2],P_gen[W],P_cons[W],P_tot[W]
+	t,P_s[W/m^2],P_gen[W],P_cons[W],P_tot[W],Bat[W*hr],eclp[bool]
+	time, solar iradience, power generated, power consumption, total power, battery status, eclipse status
