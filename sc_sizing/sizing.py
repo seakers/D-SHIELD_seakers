@@ -3,8 +3,6 @@ import numpy as np
 import jpype as jp
 import os
 
-debug_prints = True
-
 ## Constants
 G = 6.674e-11
 
@@ -26,14 +24,14 @@ a_earth = 1 * AU
 # J2_earth = 1.08262668e-3
 J2_earth = 1.0826362e-3
 
-
-def design_spacecraft(file_name, resources_path, print_bool):
+def design_spacecraft(file_name, resources_path="./lib/VASSAR_resources", print_bool=False, debug_prints=False):
     # -Main spacecraft design function, outputs a json file with updated sizing values-
     # Read input file
     instrument_lists = get_instrument_lists(file_name)
     orbit_lists = get_orbit_lists(file_name)
 
     if debug_prints:
+        print()
         print("Spacecraft Sizing Inputs:")
         print(instrument_lists)
         print(orbit_lists)
@@ -45,12 +43,12 @@ def design_spacecraft(file_name, resources_path, print_bool):
     designs = []
     for i in range(len(instrument_lists)):
         if debug_prints:
-            print("Designing Spacecraft Number " + str(i+1) + "...")
+            print("Designing Spacecraft Number " + str(i + 1) + "...")
         design = make_design(resources_path, instrument_lists[i], orbit_lists[i])
         designs.append(design)
 
     # Update designs in input JSON file and create new
-    design_json = design_to_json(file_name, designs, print_bool)
+    design_json = design_to_json(file_name, designs, print_bool, debug_prints)
 
     # Shut down Java Virtual Machine
     end_JVM()
@@ -171,7 +169,7 @@ def make_design(resources_path, instrument_list, orbit_list):
     return design
 
 
-def design_to_json(file_name, designs, print):
+def design_to_json(file_name, designs, print, debug_prints):
     # -Returns old input json with updated designs. Can print to a text file-
     # open file
     filePath = "./inputs/" + file_name
@@ -179,15 +177,15 @@ def design_to_json(file_name, designs, print):
         input_data = json.load(f)
 
     # change design parameters
-    out_data = update_json(input_data, designs)
+    out_data = update_json(input_data, designs, debug_prints)
 
     # print file
     if print:
-        print_json(file_name, out_data)
+        print_json(file_name, out_data, debug_prints)
     return out_data
 
 
-def update_json(input_data, designs):
+def update_json(input_data, designs, debug_prints):
     # -Updates values in input json and returns an updated json object-
     for i in range(len(input_data['spaceSegment'][0]['satellites'])):
         # get design from designs list
@@ -201,10 +199,18 @@ def update_json(input_data, designs):
         input_data['spaceSegment'][0]['satellites'][i]['adcs']['mass'] = design_i.getValue("ADCS-mass#")
         input_data['spaceSegment'][0]['satellites'][i]['adcs']['type'] = design_i.getValue("ADCS-type")
 
+        if debug_prints:
+            print("     Satellite mass: " + str(design_i.getValue("satellite-mass#")))
+            print("     Satellite dry mass: " + str(design_i.getValue("satellite-dry-mass")))
+            print("     Satellite volume: " + str(design_i.getValue("satellite-volume#")))
+            print("     Satellite power: " + str(design_i.getValue("satellite-BOL-power#")))
+            print("     ADCS type: " + str(design_i.getValue("ADCS-mass#")))
+            print("     ADCS mass: " + str(design_i.getValue("ADCS-type")))
+
     return input_data
 
 
-def print_json(file_name, design_json):
+def print_json(file_name, design_json, debug_prints):
     with open('./outputs/' + file_name, 'w') as outfile:
         json.dump(design_json, outfile, indent=4)
 
@@ -213,16 +219,16 @@ def print_json(file_name, design_json):
 
 
 def start_JVM():
-    curr_dir = os.listdir( os.getcwd() + r"\lib" )
+    curr_dir = os.listdir(os.getcwd() + r"\lib")
 
     classpath = ""
     for filename in curr_dir:
         if filename == 'seakers':
             # open seakers folder
-            seakers_dir = os.listdir( os.getcwd() + r"\lib\seakers" )
+            seakers_dir = os.listdir(os.getcwd() + r"\lib\seakers")
             for seak_filename in seakers_dir:
                 file_dir = os.getcwd() + r"\lib\seakers" + r"/" + seak_filename
-                classpath = os.pathsep.join( (classpath, file_dir) )
+                classpath = os.pathsep.join((classpath, file_dir))
         elif filename == '.gradle':
             gradle_dir = os.listdir(os.getcwd() + r"\lib\.gradle")
             for gradle_filename in gradle_dir:
