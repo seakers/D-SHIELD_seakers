@@ -24,7 +24,7 @@ a_earth = 1 * AU
 # J2_earth = 1.08262668e-3
 J2_earth = 1.0826362e-3
 
-def design_spacecraft(file_name, resources_path="./lib/VASSAR_resources", print_bool=False, debug_prints=False):
+def design_spacecraft(file_name, resources_path="./inputs/VASSAR_resources", print_bool=False, debug_prints=False):
     # -Main spacecraft design function, outputs a json file with updated sizing values-
     # Read input file
     instrument_lists = get_instrument_lists(file_name)
@@ -44,7 +44,7 @@ def design_spacecraft(file_name, resources_path="./lib/VASSAR_resources", print_
     for i in range(len(instrument_lists)):
         if debug_prints:
             print("Designing Spacecraft Number " + str(i + 1) + "...")
-        design = make_design(resources_path, instrument_lists[i], orbit_lists[i])
+        design = make_design(resources_path, instrument_lists[i], orbit_lists, i)
         designs.append(design)
 
     # Update designs in input JSON file and create new
@@ -156,15 +156,15 @@ def is_geo(a):
     return abs(T - 24 * 3600) <= 60
 
 
-def make_design(resources_path, instrument_list, orbit_list):
+def make_design(resources_path, instrument_list, orbit_list, i):
     # -Returns design given a list of instruments and orbital parameters-
-    params = jp.JClass("seakers.vassar.problems.Assigning.DSHIELDParams")(instrument_list, orbit_list,
+    params = jp.JClass("seakers.vassar.problems.Assigning.DSHIELDParams")(instrument_list,
                                                                           jp.JString("DSHIELD"),
                                                                           jp.JString(resources_path),
                                                                           jp.JString("CRISP-ATTRIBUTES"),
                                                                           jp.JString("test"), jp.JString("normal"))
 
-    design = params.archEval(resources_path)
+    design = params.archSize(resources_path, orbit_list[0][i])
 
     return design
 
