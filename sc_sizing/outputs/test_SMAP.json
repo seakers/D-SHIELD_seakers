@@ -15,24 +15,24 @@
                     "@id": "sat-0",
                     "name": "Landsat 8",
                     "acronym": "Landsat 8",
-                    "mass": "nil",
-                    "dryMass": "1153.6762441957858",
-                    "volume": "nil",
-                    "power": "9935.617155837717",
+                    "mass": 1153.676,
+                    "dryMass": 1153.676,
+                    "volume": 18.026,
+                    "power": 9935.617,
                     "commBand": [
                         "X"
                     ],
                     "adcs": {
-                        "mass": "146.24750759882045",
+                        "mass": 146.248,
                         "type": "three-axis"
                     },
                     "payload": [
                         {
-                            "name": "Ocean Radiometer for Carbon Assessment",
-                            "acronym": "SMAP_MWR",
-                            "mass": 236.0,
-                            "volume": 0.261,
-                            "power": 380.0,
+                            "name": "SMAP Radar",
+                            "acronym": "SMAP_RAD",
+                            "mass": 45.2,
+                            "volume": 0.216,
+                            "power": 287,
                             "orientation": {
                                 "convention": "SIDE_LOOK",
                                 "sideLookAngle": 0.0,
@@ -40,22 +40,22 @@
                             },
                             "fieldOfView": {
                                 "sensorGeometry": "RECTANGULAR",
-                                "alongTrackFieldOfView": 101.0,
-                                "crossTrackFieldOfView": 101.0,
+                                "alongTrackFieldOfView": 35.0,
+                                "crossTrackFieldOfView": 35.0,
                                 "@type": "FieldOfView"
                             },
-                            "dataRate": 384.0,
+                            "dataRate": 6.0,
                             "bitsPerPixel": 12.0,
-                            "techReadinessLevel": 9.0,
+                            "techReadinessLevel": 7.0,
                             "mountType": "BODY",
                             "@type": "Basic Sensor"
                         },
                         {
-                            "name": "Multiangle Spectro Polarimetric Imager ",
-                            "acronym": "SMAP_RAD",
-                            "mass": 236.0,
-                            "volume": 0.261,
-                            "power": 380.0,
+                            "name": "SMAP Microwave Radiometer",
+                            "acronym": "SMAP_MWR",
+                            "mass": 10.4,
+                            "volume": 0.027,
+                            "power": 45.2,
                             "orientation": {
                                 "convention": "SIDE_LOOK",
                                 "sideLookAngle": 0.0,
@@ -63,13 +63,13 @@
                             },
                             "fieldOfView": {
                                 "sensorGeometry": "RECTANGULAR",
-                                "alongTrackFieldOfView": 101.0,
-                                "crossTrackFieldOfView": 101.0,
+                                "alongTrackFieldOfView": 35.0,
+                                "crossTrackFieldOfView": 35.0,
                                 "@type": "FieldOfView"
                             },
-                            "dataRate": 384.0,
+                            "dataRate": 20.0,
                             "bitsPerPixel": 12.0,
-                            "techReadinessLevel": 9.0,
+                            "techReadinessLevel": 7.0,
                             "mountType": "BODY",
                             "@type": "Basic Sensor"
                         }
