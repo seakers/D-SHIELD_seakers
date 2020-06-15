@@ -25,7 +25,9 @@ a_earth = 1 * AU
 # J2_earth = 1.08262668e-3
 J2_earth = 1.0826362e-3
 
-def design_spacecraft(file_name, resources_path="./inputs/VASSAR_resources", print_bool=False, detabase_update=False, debug_prints=False):
+
+def design_spacecraft(file_name, resources_path="./inputs/VASSAR_resources", print_bool=False, detabase_update=False,
+                      debug_prints=False):
     # -Main spacecraft design function, outputs a json file with updated sizing values-
     # Read input file
     instrument_lists = get_instrument_lists(file_name)
@@ -59,7 +61,9 @@ def design_spacecraft(file_name, resources_path="./inputs/VASSAR_resources", pri
 
     return design_json
 
-def arch_eval(file_name, resources_path="./inputs/VASSAR_resources", print_bool=False, detabase_update=False, debug_prints=False):
+
+def arch_eval(file_name, resources_path="./inputs/VASSAR_resources", print_bool=False, detabase_update=False,
+              debug_prints=False):
     # -Main spacecraft design function, outputs a json file with updated sizing values-
     # Read input file
     instrument_lists = get_instrument_lists(file_name)
@@ -127,29 +131,29 @@ def get_orbit_lists(file_name):
     # Read every satellite in space segment
     orbit_lists = []
     for i in range(len(input_data['spaceSegment'][0]['satellites'])):
-        tempList = []
         # Translate inputs into VASSAR format
         orbit_data = input_data['spaceSegment'][0]['satellites'][i]['orbit']
-        tempList.append(translate_orbit(orbit_data))
-        orbit_lists.append(tempList)
+        orbit_lists.append(translate_orbit(orbit_data))
 
     return orbit_lists
+
 
 def update_database(file_name, resources_path):
     filePath = "./inputs/" + file_name
     with open(filePath) as f:
         input_data = json.load(f)
 
-    old_instruments = pd.read_excel(resources_path+r"\problems\DSHIELD\xls\Instrument Capability Definition.xls", "CHARACTERISTICS")
+    old_instruments = pd.read_excel(resources_path + r"\problems\DSHIELD\xls\Instrument Capability Definition.xls",
+                                    "CHARACTERISTICS")
     name_list = old_instruments._getitem_column("Name").get_values().__array__()
-    old_mass_list =  old_instruments._getitem_column("mass# nil").get_values().__array__()
+    old_mass_list = old_instruments._getitem_column("mass# nil").get_values().__array__()
     old_x_dim_list = old_instruments._getitem_column("dimension-x# nil").get_values().__array__()
     old_y_dim_list = old_instruments._getitem_column("dimension-y# nil").get_values().__array__()
     old_z_dim_list = old_instruments._getitem_column("dimension-z# nil").get_values().__array__()
     old_power_list = old_instruments._getitem_column("mass# nil").get_values().__array__()
 
-
     x = 1
+
 
 def translate_orbit(orbit_data):
     # -Translate inputs into VASSAR format-
@@ -226,6 +230,7 @@ def make_design(resources_path, instrument_list, orbit_list, i):
 
     return design
 
+
 def eval_design(resources_path, instrument_list, orbit_list, i):
     # -Returns design given a list of instruments and orbital parameters-
     params = jp.JClass("seakers.vassar.problems.Assigning.DSHIELDParams")(instrument_list[0],
@@ -237,6 +242,7 @@ def eval_design(resources_path, instrument_list, orbit_list, i):
     design = params.archEval(resources_path, orbit_list[0][i])
 
     return design
+
 
 def design_to_json(file_name, designs, print, debug_prints):
     # -Returns old input json with updated designs. Can print to a text file-
@@ -264,11 +270,15 @@ def update_json(input_data, designs, debug_prints):
         sat_dims = design_i.getValue("satellite-dimensions").split()
         volume = float(sat_dims[0]) * float(sat_dims[1]) * float(sat_dims[2])
 
-        input_data['spaceSegment'][0]['satellites'][i]['mass'] = round( float(design_i.getValue("satellite-dry-mass")), 3)
-        input_data['spaceSegment'][0]['satellites'][i]['dryMass'] = round( float(design_i.getValue("satellite-dry-mass")), 3)
-        input_data['spaceSegment'][0]['satellites'][i]['volume'] = round( volume, 3)
-        input_data['spaceSegment'][0]['satellites'][i]['power'] = round( float(design_i.getValue("satellite-BOL-power#")), 3)
-        input_data['spaceSegment'][0]['satellites'][i]['adcs']['mass'] = round( float(design_i.getValue("ADCS-mass#")), 3)
+        input_data['spaceSegment'][0]['satellites'][i]['mass'] = round(float(design_i.getValue("satellite-dry-mass")),
+                                                                       3)
+        input_data['spaceSegment'][0]['satellites'][i]['dryMass'] = round(
+            float(design_i.getValue("satellite-dry-mass")), 3)
+        input_data['spaceSegment'][0]['satellites'][i]['volume'] = round(volume, 3)
+        input_data['spaceSegment'][0]['satellites'][i]['power'] = round(
+            float(design_i.getValue("satellite-BOL-power#")), 3)
+        input_data['spaceSegment'][0]['satellites'][i]['adcs']['mass'] = round(float(design_i.getValue("ADCS-mass#")),
+                                                                               3)
         input_data['spaceSegment'][0]['satellites'][i]['adcs']['type'] = design_i.getValue("ADCS-type")
 
         if debug_prints:
