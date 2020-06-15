@@ -42,22 +42,11 @@ def design_spacecraft(file_name, resources_path="./inputs/VASSAR_resources", pri
         print(instrument_lists)
         print(orbit_lists)
 
-    # Start Java Virtual Machine
-    start_JVM()
-
     # Create designs from input sensors and orbits
-    designs = []
-    for i in range(len(instrument_lists)):
-        if debug_prints:
-            print("Designing Spacecraft Number " + str(i + 1) + "...")
-        design = make_design(resources_path, instrument_lists[i], orbit_lists, i)
-        designs.append(design)
+    designs = make_design(resources_path, instrument_lists, orbit_lists)
 
     # Update designs in input JSON file and create new
     design_json = design_to_json(file_name, designs, print_bool, debug_prints)
-
-    # Shut down Java Virtual Machine
-    end_JVM()
 
     return design_json
 
@@ -78,27 +67,17 @@ def arch_eval(file_name, resources_path="./inputs/VASSAR_resources", print_bool=
         print(instrument_lists)
         print(orbit_lists)
 
-    # Start Java Virtual Machine
-    start_JVM()
-
     # Create designs from input sensors and orbits
-    designs = []
-    for i in range(len(instrument_lists)):
-        if debug_prints:
-            print("Designing Spacecraft Number " + str(i + 1) + "...")
-        design = eval_design(resources_path, instrument_lists, orbit_lists, i)
-        designs.append(design)
+    results = eval_design(resources_path, instrument_lists, orbit_lists)
+    designs = results.getDesigns()
 
     # Update designs in input JSON file and create new
-    design_json = design_to_json(file_name, designs, print_bool, debug_prints)
+    design_to_json(file_name, designs, print_bool, debug_prints)
 
     # Package outputs
     eval = [0.0, 0.0]
-    eval[0] = designs[0].get(0).getScience()
-    eval[1] = designs[0].get(0).getCost()
-
-    # Shut down Java Virtual Machine
-    end_JVM()
+    eval[0] = results.getScience()
+    eval[1] = results.getCost()
 
     return eval
 
@@ -218,30 +197,20 @@ def is_geo(a):
     return abs(T - 24 * 3600) <= 60
 
 
-def make_design(resources_path, instrument_list, orbit_list, i):
+def make_design(resources_path, instrument_lists, orbit_list):
     # -Returns design given a list of instruments and orbital parameters-
-    params = jp.JClass("seakers.vassar.problems.Assigning.DSHIELDParams")(instrument_list,
-                                                                          jp.JString("SMAP"),
-                                                                          jp.JString(resources_path),
-                                                                          jp.JString("CRISP-ATTRIBUTES"),
-                                                                          jp.JString("test"), jp.JString("normal"))
-
-    design = params.archSize(resources_path, orbit_list[0][i])
+    vassar_py = jp.JClass("seakers.vassar.utils.VassarPy")(instrument_lists, orbit_list, jp.JString(resources_path))
+    design = vassar_py.archDesign()
 
     return design
 
 
-def eval_design(resources_path, instrument_list, orbit_list, i):
+def eval_design(resources_path, instrument_lists, orbit_list):
     # -Returns design given a list of instruments and orbital parameters-
-    params = jp.JClass("seakers.vassar.problems.Assigning.DSHIELDParams")(instrument_list[0],
-                                                                          jp.JString("SMAP"),
-                                                                          jp.JString(resources_path),
-                                                                          jp.JString("CRISP-ATTRIBUTES"),
-                                                                          jp.JString("test"), jp.JString("normal"))
+    vassar_py = jp.JClass("seakers.vassar.utils.VassarPy")(instrument_lists, orbit_list, jp.JString(resources_path))
+    results = vassar_py.archEval()
 
-    design = params.archEval(resources_path, orbit_list[0][i])
-
-    return design
+    return results
 
 
 def design_to_json(file_name, designs, print, debug_prints):
@@ -264,7 +233,7 @@ def update_json(input_data, designs, debug_prints):
     # -Updates values in input json and returns an updated json object-
     for i in range(len(input_data['spaceSegment'][0]['satellites'])):
         # get design from designs list
-        design_i = designs[i].get(0)
+        design_i = designs.get(i)
 
         # update values in json file
         sat_dims = design_i.getValue("satellite-dimensions").split()
