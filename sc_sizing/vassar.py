@@ -26,9 +26,9 @@ a_earth = 1 * AU
 J2_earth = 1.0826362e-3
 
 
-def design_spacecraft(file_name, resources_path="./inputs/VASSAR_resources", print_bool=False, detabase_update=False,
+def arch_design(file_name, resources_path="./inputs/VASSAR_resources", print_bool=False, detabase_update=False,
                       debug_prints=False):
-    # -Main spacecraft design function, outputs a json file with updated sizing values-
+    # -Main architecture design function, outputs a json file with updated sizing values-
     # Read input file
     instrument_lists = get_instrument_lists(file_name)
     orbit_lists = get_orbit_lists(file_name)
@@ -53,7 +53,7 @@ def design_spacecraft(file_name, resources_path="./inputs/VASSAR_resources", pri
 
 def arch_eval(file_name, resources_path="./inputs/VASSAR_resources", print_bool=False, detabase_update=False,
               debug_prints=False):
-    # -Main spacecraft design function, outputs a json file with updated sizing values-
+    # -Main architecture evauluation function, outputs a json file with updated sizing values-
     # Read input file
     instrument_lists = get_instrument_lists(file_name)
     orbit_lists = get_orbit_lists(file_name)
@@ -70,9 +70,6 @@ def arch_eval(file_name, resources_path="./inputs/VASSAR_resources", print_bool=
     # Create designs from input sensors and orbits
     results = eval_design(resources_path, instrument_lists, orbit_lists)
     designs = results.getDesigns()
-
-    # Update designs in input JSON file and create new
-    design_to_json(file_name, designs, print_bool, debug_prints)
 
     # Package outputs
     eval = [0.0, 0.0]
@@ -199,7 +196,7 @@ def is_geo(a):
 
 def make_design(resources_path, instrument_lists, orbit_list):
     # -Returns design given a list of instruments and orbital parameters-
-    vassar_py = jp.JClass("seakers.vassar.utils.VassarPy")(instrument_lists, orbit_list, jp.JString(resources_path))
+    vassar_py = jp.JClass("seakers.vassar.utils.VassarPy")("SMAP", instrument_lists, orbit_list, jp.JString(resources_path))
     design = vassar_py.archDesign()
 
     return design
@@ -207,7 +204,7 @@ def make_design(resources_path, instrument_lists, orbit_list):
 
 def eval_design(resources_path, instrument_lists, orbit_list):
     # -Returns design given a list of instruments and orbital parameters-
-    vassar_py = jp.JClass("seakers.vassar.utils.VassarPy")(instrument_lists, orbit_list, jp.JString(resources_path))
+    vassar_py = jp.JClass("seakers.vassar.utils.VassarPy")("SMAP", instrument_lists, orbit_list, jp.JString(resources_path))
     results = vassar_py.archEval()
 
     return results
@@ -251,11 +248,35 @@ def update_json(input_data, designs, debug_prints):
         input_data['spaceSegment'][0]['satellites'][i]['adcs']['type'] = design_i.getValue("ADCS-type")
 
         if debug_prints:
-            print("     Satellite dry mass  [kg]: " + str(design_i.getValue("satellite-dry-mass")))
-            print("     Satellite volume    [m^3]: " + str(volume))
-            print("     Satellite power     [W]: " + str(design_i.getValue("satellite-BOL-power#")))
-            print("     ADCS type           [-]: " + str(design_i.getValue("ADCS-mass#")))
-            print("     ADCS mass           [kg]: " + str(design_i.getValue("ADCS-type")))
+            print("")
+            print("     Satellite dry mass  \t\t\t[kg]: " + str(design_i.getValue("satellite-dry-mass")))
+            print("          Adapter mass \t\t\t\t[kg]: " + str(design_i.getValue("adapter-mass")))
+            print("          ADCS mass \t\t\t\t[kg]: " + str(design_i.getValue("ADCS-mass#")))
+            print("          Avionics mass \t\t\t[kg]: " + str(design_i.getValue("avionics-mass#")))
+            print("          Bus mass \t\t\t\t\t[kg]: " + str(design_i.getValue("bus-mass")))
+            print("          Comms OBDH mass \t\t\t[kg]: " + str(design_i.getValue("comm-OBDH-mass")))
+            print("          EPS mass \t\t\t\t\t[kg]: " + str(design_i.getValue("EPS-mass#")))
+            print("          Payload mass \t\t\t\t[kg]: " + str(design_i.getValue("payload-mass")))
+            print("          ADCS Propellant mass \t\t[kg]: " + str(design_i.getValue("propellant-mass-ADCS")))
+            print("          Injection Propellant mass [kg]: " + str(design_i.getValue("propellant-mass-injection")))
+            print("          Propulsion mass \t\t\t[kg]: " + str(design_i.getValue("propulsion-mass#")))
+            print("          Solar Array mass \t\t\t[kg]: " + str(design_i.getValue("solar-array-mass")))
+            print("          Structure mass \t\t\t[kg]: " + str(design_i.getValue("structure-mass#")))
+            print("          Thermal mass \t\t\t\t[kg]: " + str(design_i.getValue("thermal-mass#")))
+            print("")
+            print("     Satellite volume \t\t\t\t[m^3]: " + str(volume))
+            print("")
+            print("     Satellite power \t\t\t\t[W]: " + str(design_i.getValue("satellite-BOL-power#")))
+            print("          Bus BOL power \t\t\t[W]: " + str(design_i.getValue("bus-BOL-power#")))
+            print("          Payload Peak power \t\t[W]: " + str(design_i.getValue("payload-peak-power#")))
+            print("          Payload power \t\t\t[W]: " + str(design_i.getValue("payload-power#")))
+            print("          Power Duty Cycle \t\t\t[W]: " + str(design_i.getValue("power-duty-cycle#")))
+            print("          Satellite BOL power \t\t[W]: " + str(design_i.getValue("satellite-BOL-power")))
+            print("")
+            print("     ADCS type \t\t\t\t\t\t[-]: " + str(design_i.getValue("ADCS-mass#")))
+            print("          ADCS mass \t\t\t\t[kg]: " + str(design_i.getValue("ADCS-type")))
+            print("          ADCS ISP \t\t\t\t\t[m/s]: " + str(design_i.getValue("Isp-ADCS")))
+            print("")
 
     return input_data
 

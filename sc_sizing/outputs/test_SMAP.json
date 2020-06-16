@@ -15,15 +15,15 @@
                     "@id": "sat-0",
                     "name": "Landsat 8",
                     "acronym": "Landsat 8",
-                    "mass": 1501.886,
-                    "dryMass": 1501.886,
-                    "volume": 23.467,
-                    "power": 10062.908,
+                    "mass": 899.215,
+                    "dryMass": 899.215,
+                    "volume": 14.05,
+                    "power": 3571.083,
                     "commBand": [
                         "X"
                     ],
                     "adcs": {
-                        "mass": 150.221,
+                        "mass": 140.822,
                         "type": "three-axis"
                     },
                     "payload": [
