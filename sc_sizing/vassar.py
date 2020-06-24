@@ -115,19 +115,6 @@ def get_orbit_lists(file_name):
 
 
 def update_database(file_name, resources_path):
-    filePath = "./inputs/" + file_name
-    with open(filePath) as f:
-        input_data = json.load(f)
-
-    old_instruments = pd.read_excel(resources_path + r"\problems\DSHIELD\xls\Instrument Capability Definition.xls",
-                                    "CHARACTERISTICS")
-    name_list = old_instruments._getitem_column("Name").get_values().__array__()
-    old_mass_list = old_instruments._getitem_column("mass# nil").get_values().__array__()
-    old_x_dim_list = old_instruments._getitem_column("dimension-x# nil").get_values().__array__()
-    old_y_dim_list = old_instruments._getitem_column("dimension-y# nil").get_values().__array__()
-    old_z_dim_list = old_instruments._getitem_column("dimension-z# nil").get_values().__array__()
-    old_power_list = old_instruments._getitem_column("mass# nil").get_values().__array__()
-
     x = 1
 
 
@@ -290,25 +277,25 @@ def print_json(file_name, design_json, debug_prints):
 
 
 def start_JVM():
-    curr_dir = os.listdir(os.getcwd() + r"\lib")
+    curr_dir = os.listdir(os.getcwd() + r"/lib")
 
     classpath = ""
     for filename in curr_dir:
         if filename == 'seakers':
             # open seakers folder
-            seakers_dir = os.listdir(os.getcwd() + r"\lib\seakers")
+            seakers_dir = os.listdir(os.getcwd() + r"/lib/seakers")
             for seak_filename in seakers_dir:
-                file_dir = os.getcwd() + r"\lib\seakers" + r"/" + seak_filename
+                file_dir = os.getcwd() + r"/lib/seakers" + r"/" + seak_filename
                 classpath = os.pathsep.join((classpath, file_dir))
         elif filename == '.gradle':
-            gradle_dir = os.listdir(os.getcwd() + r"\lib\.gradle")
+            gradle_dir = os.listdir(os.getcwd() + r"/lib/.gradle")
             for gradle_filename in gradle_dir:
-                file_dir = os.getcwd() + r"\lib\.gradle" + r"/" + gradle_filename
+                file_dir = os.getcwd() + r"/lib/.gradle" + r"/" + gradle_filename
                 classpath = os.pathsep.join((classpath, file_dir))
         elif filename == 'gov':
-            gov_dir = os.listdir(os.getcwd() + r"\lib\gov")
+            gov_dir = os.listdir(os.getcwd() + r"/lib/gov")
             for gov_filename in gov_dir:
-                file_dir = os.getcwd() + r"\lib\gov" + r"/" + gov_filename
+                file_dir = os.getcwd() + r"/lib/gov" + r"/" + gov_filename
                 classpath = os.pathsep.join((classpath, file_dir))
 
     jp.startJVM(jp.getDefaultJVMPath(), "-ea", "-Djava.class.path=%s" % classpath)
