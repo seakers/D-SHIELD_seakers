@@ -1,7 +1,7 @@
 import sc_sizing.vassar as vp
 
 # input locations
-file_name = 'test_SMAP.json'
+file_name = 'power_vs_mass.json'
 
 # Start Java Virtual Machine
 vp.start_JVM()

@@ -1,0 +1,93 @@
+{
+    "@type": "Architecture",
+    "@id": "arch-0",
+    "spaceSegment": [
+        {
+            "@type": "Constellation",
+            "@id": "con-0",
+            "constellationType": "DELTA_HOMOGENEOUS",
+            "numberSatellites": 1,
+            "numberPlanes": 1,
+            "relativeSpacing": 0,
+            "satellites": [
+                {
+                    "@type": "Satellite",
+                    "@id": "sat-0",
+                    "name": "Landsat 8",
+                    "acronym": "Landsat 8",
+                    "mass": 1026.762,
+                    "dryMass": 1026.762,
+                    "volume": 16.043,
+                    "power": 152.783,
+                    "commBand": [
+                        "X"
+                    ],
+                    "adcs": {
+                        "mass": 142.381,
+                        "type": "three-axis"
+                    },
+                    "payload": [
+                        {
+                            "name": "BIOMASS",
+                            "acronym": "BIOMASS",
+                            "mass": 45.2,
+                            "volume": 0.216,
+                            "power": 287,
+                            "orientation": {
+                                "convention": "SIDE_LOOK",
+                                "sideLookAngle": 0.0,
+                                "@type": "Orientation"
+                            },
+                            "fieldOfView": {
+                                "sensorGeometry": "RECTANGULAR",
+                                "alongTrackFieldOfView": 35.0,
+                                "crossTrackFieldOfView": 35.0,
+                                "@type": "FieldOfView"
+                            },
+                            "dataRate": 6.0,
+                            "bitsPerPixel": 12.0,
+                            "techReadinessLevel": 7.0,
+                            "mountType": "BODY",
+                            "@type": "Basic Sensor"
+                        }
+                    ],
+                    "orbit": {
+                        "@type": "Orbit",
+                        "orbitType": "KEPLERIAN",
+                        "semimajorAxis": 6978.1363,
+                        "inclination": 90.0,
+                        "eccentricity": 0.0,
+                        "periapsisArgument": 0.0,
+                        "rightAscensionAscendingNode": 0.0,
+                        "trueAnomaly": 0.0,
+                        "epoch": "2020-03-08T00:00:00-06:00",
+                        "time": "AM"
+                    },
+                    "techReadinessLevel": 9,
+                    "isGroundCommand": true,
+                    "isSpare": false,
+                    "propellantType": "MONO_PROP",
+                    "stabilizationType": "AXIS_3"
+                }
+            ]
+        }
+    ],
+    "groundSegment": [
+        {
+            "@type": "GroundNetwork",
+            "numberStations": 1,
+            "groundStations": [
+                {
+                    "@type": "GroundStation",
+                    "@id": "gs-0",
+                    "latitude": 40.5974791834978,
+                    "longitude": -104.83875274658203,
+                    "elevation": 1570.0,
+                    "commBand": [
+                        "X"
+                    ]
+                }
+            ]
+        }
+    ]
+}
