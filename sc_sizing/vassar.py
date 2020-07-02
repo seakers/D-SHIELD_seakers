@@ -1,5 +1,5 @@
 import json
-import pandas as pd
+import matplotlib.pyplot as plt
 import numpy as np
 import jpype as jp
 import os
@@ -27,7 +27,7 @@ J2_earth = 1.0826362e-3
 
 
 def arch_design(file_name, resources_path="./inputs/VASSAR_resources", print_bool=False, detabase_update=False,
-                      debug_prints=False):
+                      debug_prints=False, fact_list=[[]]):
     # -Main architecture design function, outputs a json file with updated sizing values-
     # Read input file
     instrument_lists = get_instrument_lists(file_name)
@@ -43,16 +43,16 @@ def arch_design(file_name, resources_path="./inputs/VASSAR_resources", print_boo
         print(orbit_lists)
 
     # Create designs from input sensors and orbits
-    designs = make_design(resources_path, instrument_lists, orbit_lists)
+    designs = make_design(resources_path, instrument_lists, orbit_lists, fact_list)
 
     # Update designs in input JSON file and create new
     design_json = design_to_json(file_name, designs, print_bool, debug_prints)
 
-    return design_json
+    return [design_json, designs]
 
 
 def arch_eval(file_name, resources_path="./inputs/VASSAR_resources", print_bool=False, detabase_update=False,
-              debug_prints=False):
+              debug_prints=False, fact_list=[[]]):
     # -Main architecture evauluation function, outputs a json file with updated sizing values-
     # Read input file
     instrument_lists = get_instrument_lists(file_name)
@@ -68,7 +68,7 @@ def arch_eval(file_name, resources_path="./inputs/VASSAR_resources", print_bool=
         print(orbit_lists)
 
     # Create designs from input sensors and orbits
-    results = eval_design(resources_path, instrument_lists, orbit_lists)
+    results = eval_design(resources_path, instrument_lists, orbit_lists, fact_list)
     designs = results.getDesigns()
 
     # Package outputs
@@ -76,7 +76,7 @@ def arch_eval(file_name, resources_path="./inputs/VASSAR_resources", print_bool=
     eval[0] = results.getScience()
     eval[1] = results.getCost()
 
-    return eval
+    return results
 
 
 def get_instrument_lists(file_name):
@@ -181,17 +181,17 @@ def is_geo(a):
     return abs(T - 24 * 3600) <= 60
 
 
-def make_design(resources_path, instrument_lists, orbit_list):
+def make_design(resources_path, instrument_lists, orbit_list, fact_list):
     # -Returns design given a list of instruments and orbital parameters-
-    vassar_py = jp.JClass("seakers.vassar.utils.VassarPy")("SMAP", instrument_lists, orbit_list, jp.JString(resources_path))
+    vassar_py = jp.JClass("seakers.vassar.utils.VassarPy")("SMAP", instrument_lists, orbit_list, jp.JString(resources_path),fact_list)
     design = vassar_py.archDesign()
 
     return design
 
 
-def eval_design(resources_path, instrument_lists, orbit_list):
+def eval_design(resources_path, instrument_lists, orbit_list, fact_list):
     # -Returns design given a list of instruments and orbital parameters-
-    vassar_py = jp.JClass("seakers.vassar.utils.VassarPy")("SMAP", instrument_lists, orbit_list, jp.JString(resources_path))
+    vassar_py = jp.JClass("seakers.vassar.utils.VassarPy")("SMAP", instrument_lists, orbit_list, jp.JString(resources_path), fact_list)
     results = vassar_py.archEval()
 
     return results
@@ -275,6 +275,86 @@ def print_json(file_name, design_json, debug_prints):
         print("Updated JSON printed to text file")
 
 
+##############################
+# Design Study Tools
+##############################
+
+def change_design(file_name, field, val, prints=False):
+    # Size spacecraft by overriding info from data spreadsheets
+    if(field == "payload-power"):
+        factList = [["payload-power#", str(val)], ["payload-peak-power#", str(val)]]
+    else:
+        factList = [field, str(val)],
+
+    return arch_design(file_name,fact_list=factList, debug_prints=prints)
+
+def change_eval(file_name, field, val, prints=False):
+    # Evaluate architecture by overriding info from data spreadsheets
+    if(field == "payload-power"):
+        factList = [["payload-power#", str(val)], ["payload-peak-power#", str(val)]]
+    else:
+        factList = [field, str(val)],
+
+    return arch_eval(file_name,fact_list=factList, debug_prints=prints)
+
+def solve_sat_mass_to_payload_power(file_name, target_mass, prints=False, design_out=False):
+    # Returns the payload power req for a given spacecraft mass
+    tolerance = 0.1
+
+    ppower_u = 2000
+    ppower_l = 0
+    mass_mid = get_mass(file_name, ppower_u)
+    i = 0
+
+    mass_u = get_mass(file_name, ppower_u)
+    if(mass_u[1] >= target_mass):
+        # Error, target mass is smaller than payload mass
+        return -1
+
+    while(abs(mass_mid[0] - target_mass) > tolerance):
+        ppower_mid = ppower_l + (ppower_u - ppower_l)/2
+        mass_mid = get_mass(file_name, ppower_mid)
+
+        if(mass_mid[0] <= target_mass):
+            ppower_l = ppower_mid
+        else:
+            ppower_u = ppower_mid
+
+        i = i + 1
+
+        if(i > 10000):
+            # time out, no solution found
+            return -1
+
+    if(design_out):
+        return change_design(file_name, "payload-power", ppower_mid, prints)
+    else:
+        return ppower_mid
+
+def get_mass(file_name, ppower):
+    arch_design = change_design(file_name, "payload-power", ppower)
+    return [float(arch_design[1].get(0).getValue("satellite-dry-mass")), float(arch_design[1].get(0).getValue("payload-mass#"))]
+
+def plot_ppower_vs_sat_mass(filename, ppower_l, ppower_u, n):
+    ppower = [0] * n
+    sat_mass = [0] * n
+    step = (ppower_u - ppower_l)/n
+    for i in range(len(ppower)):
+        if i == 0:
+            ppower[i] = ppower_l
+        else:
+            ppower[i] = ppower[i - 1] + step
+
+        sat_mass[i] = get_mass(filename, ppower[i])
+
+    plt.scatter(ppower, sat_mass)
+    plt.grid()
+    plt.show()
+
+
+##############################
+# Java Virtual Machine Setup
+##############################
 def start_JVM():
     curr_dir = os.listdir(os.getcwd() + r"/lib")
 
