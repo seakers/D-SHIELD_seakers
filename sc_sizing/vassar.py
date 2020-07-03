@@ -345,7 +345,7 @@ def plot_ppower_vs_sat_mass(filename, ppower_l, ppower_u, n):
         else:
             ppower[i] = ppower[i - 1] + step
 
-        sat_mass[i] = get_mass(filename, ppower[i])
+        sat_mass[i] = get_mass(filename, ppower[i])[0]
 
     plt.scatter(ppower, sat_mass)
     plt.grid()
